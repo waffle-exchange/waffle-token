@@ -97,7 +97,7 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
         }
 
         // Token amount per price
-        uint256 tokensSold = (_value).div(buyPrice).mul(10 ** tokenDecimals);
+        uint256 tokensSold = (_value).mul(10 ** tokenDecimals).div(buyPrice);
 
 
         // Set how much tokens the user can claim
@@ -118,7 +118,7 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
     }
 
   function totalTokensNeeded() external view returns (uint256) {
-    return hardCap.div(buyPrice).mul(10 ** tokenDecimals);
+    return hardCap.mul(10 ** tokenDecimals).div(buyPrice);
   }
 
   function stop()

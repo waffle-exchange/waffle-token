@@ -20,6 +20,8 @@ contract Rset is Context, IERC20, Ownable {
     uint8 private _decimals;
 
     mapping (address => bool) private _feeWhiteList;
+    mapping (address => bool) private _lockWhiteList;
+    bool locked = true;
     uint256 public basePercent = 100; // 1%
 
     constructor () public {
@@ -93,17 +95,30 @@ contract Rset is Context, IERC20, Ownable {
         _burn(account, amount);
     }
 
-    function addToWhitelist(address wallet) onlyOwner() public {
+    function addToWhitelist(address wallet) onlyOwner() external {
         _feeWhiteList[wallet] = true;
     }
 
-    function removeFromWhitelist(address wallet) onlyOwner() public {
+    function removeFromWhitelist(address wallet) onlyOwner() external {
         _feeWhiteList[wallet] = false;
     }
 
-    function _transfer(address from, address to, uint256 value) public returns (bool) {
+    function addToLockWhitelist(address wallet) onlyOwner() external {
+        _lockWhiteList[wallet] = true;
+    }
+
+    function removeFromLockWhitelist(address wallet) onlyOwner() external {
+        _lockWhiteList[wallet] = false;
+    }
+
+    function release() onlyOwner external {
+        locked = false;
+    }
+
+    function _transfer(address from, address to, uint256 value) private returns (bool) {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
+        require(!locked || _lockWhiteList[to] || _lockWhiteList[from], "ERC20: Not release yet");
 
         if (_feeWhiteList[to] || _feeWhiteList[from]) {
 

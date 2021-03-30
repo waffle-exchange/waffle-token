@@ -13,8 +13,6 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
 
     mapping(address => uint256) participants;
 
-    mapping(address => uint256) public claimableTokens;
-
     uint256 buyPrice;
     uint256 minimalGoal;
     uint256 hardCap;
@@ -28,8 +26,6 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
     address payable fundingAddress;
     uint256 public totalCollected;
     uint256 totalSold;
-    bool claimEnabled = false;
-    uint256 claimWaitTime = 60 days;
     uint256 start;
     bool stopped = false;
 
@@ -53,32 +49,9 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
         return address(crowdsaleToken);
     }
 
-    function getClaimableTokens(address wallet)
-    external 
-    view
-    returns(uint256)
-    {
-      return claimableTokens[wallet];
-    }
-
     receive() external payable {
         require(msg.value >= 100000000000000000, "Min 0.1 eth");
         sell(msg.sender, msg.value);
-    }
-
-    // For users to claim their tokens after a successful tge
-    function claim() external 
-      nonReentrant 
-    returns (uint256) {
-        require(canClaim(), "Claim is not yet possible");
-        uint256 amount = claimableTokens[msg.sender];
-        claimableTokens[msg.sender] = 0;
-        require(crowdsaleToken.transfer(msg.sender, amount), "Error transfering");
-        return amount;
-    }
-
-    function canClaim() public view returns (bool) {
-      return claimEnabled || block.timestamp > (start + claimWaitTime);
     }
 
     function sell(address payable _recepient, uint256 _value) internal
@@ -100,8 +73,8 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
         uint256 tokensSold = (_value).mul(10 ** tokenDecimals).div(buyPrice);
 
 
-        // Set how much tokens the user can claim
-        claimableTokens[_recepient] = claimableTokens[_recepient].add(tokensSold);
+        // Send user tokens
+        require(crowdsaleToken.transfer(_recepient, tokensSold), "Error transfering");
 
         emit SellToken(_recepient, tokensSold, _value);
 
@@ -133,13 +106,6 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
     onlyOwner()
   {
         stopped = false;
-  }
-
-  function enableClaim()
-    external
-    onlyOwner()
-  {
-        claimEnabled = true;
   }
 
   function returnUnsold()

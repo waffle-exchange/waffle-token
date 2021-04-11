@@ -8,9 +8,10 @@
   },
   "scripts": {
     "test": "truffle test",
-    "flatten-all": "del-cli ./dist && mkdir \\dist && npm run flatten-token && npm run flatten-private-sale",
-    "flatten-private-sale": "truffle-flattener contracts/RsetPrivateSale.sol > dist/RsetPrivateSale.sol",
-    "flatten-token": "truffle-flattener contracts/Rset.sol > dist/Rset.sol"
+    "flatten-all": "del-cli ./dist && mkdir \\dist && npm run flatten-token && npm run flatten-private-sale && npm run flatten-sale",
+    "flatten-private-sale": "truffle-flattener contracts/WafflePrivateSale.sol > dist/WafflePrivateSale.sol",
+    "flatten-sale": "truffle-flattener contracts/WaffleSale.sol > dist/WaffleSale.sol",
+    "flatten-token": "truffle-flattener contracts/Waffle.sol > dist/Waffle.sol"
   },
   "author": "",
   "license": "ISC",

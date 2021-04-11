@@ -6,7 +6,7 @@ import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 import "../node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../node_modules/@openzeppelin/contracts/utils/Address.sol";
 
-contract RsetPrivateSale is ReentrancyGuard, Ownable {
+contract WaffleSale is ReentrancyGuard, Ownable {
 
     using SafeMath for uint256;
     using Address for address payable;
@@ -33,9 +33,9 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
         IERC20 _token,
         address payable _fundingAddress
     ) public {
-        minimalGoal = 300000000000000000000;
-        hardCap = 400000000000000000000;
-        buyPrice = 40000000000000; // 0,00004 eth
+        minimalGoal = 750000000000000000000;
+        hardCap = 1500000000000000000000;
+        buyPrice = 150015001500000; // 0,0001500150015 BNB
         crowdsaleToken = _token;
         fundingAddress = _fundingAddress;
         start = getTime();
@@ -50,7 +50,8 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
     }
 
     receive() external payable {
-        require(msg.value >= 100000000000000000, "Min 0.1 eth");
+        require(msg.value >= 500000000000000000, "Min 0.5 BNB");
+        require(msg.value <= 10000000000000000000, "Min 10 BNB");
         sell(msg.sender, msg.value);
     }
 
@@ -83,7 +84,7 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
 
         fundingAddress.sendValue(_value);
 
-        // Update total ETH
+        // Update total BNB
         totalCollected = totalCollected.add(_value);
 
         // Update tokens sold
@@ -140,7 +141,7 @@ contract RsetPrivateSale is ReentrancyGuard, Ownable {
     returns(bool)
   {
     return (
-      totalCollected >= hardCap || totalCollected >= minimalGoal
+      totalCollected >= minimalGoal
     );
   }
 

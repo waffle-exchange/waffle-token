@@ -5,7 +5,7 @@ import "../node_modules/@openzeppelin/contracts/GSN/Context.sol";
 import "../node_modules/@openzeppelin/contracts/math/SafeMath.sol";
 import "../node_modules/@openzeppelin/contracts/access/Ownable.sol";
 
-contract Rset is Context, IERC20, Ownable {
+contract Waffle is Context, IERC20, Ownable {
 
     using SafeMath for uint256;
 
@@ -25,10 +25,10 @@ contract Rset is Context, IERC20, Ownable {
     uint256 public basePercent = 100; // 1%
 
     constructor () public {
-        _name = "Rset";
-        _symbol = "RSET";
+        _name = "Waffle";
+        _symbol = "WAF";
         _decimals = 18;
-        uint256 amount = 100000000000000000000000000;
+        uint256 amount = 50000000000000000000000000;
         _totalSupply = amount;
         _balances[_msgSender()] = amount;
         emit Transfer(address(0), _msgSender(), amount);

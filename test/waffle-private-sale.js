@@ -1,7 +1,7 @@
 const { expectRevert, BN } = require('@openzeppelin/test-helpers');
 const { assert } = require('chai');
 const ERC20 = artifacts.require("ERC20Demo");
-const RsetSale = artifacts.require("RsetPrivateSaleMock");
+const WaffleSale = artifacts.require("WafflePrivateSaleMock");
 
 let snapshotId;
 
@@ -38,10 +38,10 @@ takeSnapshot = () => {
   })
 }
 
-contract('Rset Private Sale', function (accounts) {
+contract('Waffle Private Sale', function (accounts) {
   beforeEach(async function () {    
     this.erc20 = await ERC20.new({from: accounts[0]});
-    this.sale = await RsetSale.new(
+    this.sale = await WaffleSale.new(
       this.erc20.address,
       accounts[3],
       {from: accounts[0]}
@@ -59,17 +59,17 @@ contract('Rset Private Sale', function (accounts) {
     it('should buy and distribute', async function () {
       let originalBalance = (await web3.eth.getBalance(accounts[3]));
       await this.sale.sendTransaction({from:accounts[1], value:5000000000000000000});
-      assert.equal((await web3.eth.getBalance(accounts[3])).valueOf(), parseInt(originalBalance) + 5000000000000000000, "Incorrect eth value");
+      assert.equal((await web3.eth.getBalance(accounts[3])).valueOf(), parseInt(originalBalance) + 5000000000000000000, "Incorrect bnb value");
       
-      assert.equal((await this.erc20.balanceOf(accounts[1])).valueOf(), 125000000000000000000000, "125k wasn't in the first account");
+      assert.equal((await this.erc20.balanceOf(accounts[1])).valueOf(), 40000000000000000000000, "40k wasn't in the first account");
     });
   });
 
   describe('when normal sale', function () {
-    it('should fail if value is less than 0.1 eth', async function () {
+    it('should fail if value is less than 0.5 bnb', async function () {
       await expectRevert(
-        this.sale.sendTransaction({from:accounts[1], value:90000000000000000}),
-          'Min 0.1 eth'
+        this.sale.sendTransaction({from:accounts[1], value:400000000000000000}),
+          'Min 0.5 BNB'
       );
     });
   });

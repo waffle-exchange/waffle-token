@@ -1,10 +1,10 @@
 pragma solidity 0.6.4;
 
-import "../RsetPrivateSale.sol";
+import "../WafflePrivateSale.sol";
 
-contract RsetPrivateSaleMock is RsetPrivateSale {
+contract WafflePrivateSaleMock is WafflePrivateSale {
 
-    constructor (IERC20 _token, address payable funding) public RsetPrivateSale(_token, funding) {
+    constructor (IERC20 _token, address payable funding) public WafflePrivateSale(_token, funding) {
     }
 
     function mock_setSoftCapAndHardCap(uint256 mockSoftcap, uint256 mockHardcap) external {

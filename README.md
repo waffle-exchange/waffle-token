@@ -1,4 +1,4 @@
-# Rset Token Contracts
+# Waffle Token Contracts
 
 # Setup
 
